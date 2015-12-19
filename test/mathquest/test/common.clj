@@ -1,9 +1,9 @@
-(ns mathquest.common
+(ns mathquest.test.common
   (:require
     [clojure.test :refer :all]
     [mathquest.common :refer :all]))
 
-(deftest common-tests
+(deftest common-test
   (println "Testing common functions")
   (time
     (testing "gcd"
