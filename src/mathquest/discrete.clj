@@ -26,7 +26,7 @@
   "Returns the greatest common divisors of one or more integers."
   [^longs & xs]
   (if (empty? xs)
-    (helper-gcd)
+    (tail-gcd)
     (reduce tail-gcd xs)))
 
 (defn- helper-lcm
