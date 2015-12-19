@@ -29,6 +29,7 @@
       (is (= clojure.lang.ArraySeq
              (type (divisors 100))))
       (is (= [1 2 3 6] (divisors 6)))
-      (is (= [1 2 4] (divisors 4))))))
+      (is (= [1 2 4] (divisors 4)))
+      (is (= true (every? integer? (divisors 34353452342)))))))
 
 
