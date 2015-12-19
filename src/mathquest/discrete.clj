@@ -3,20 +3,10 @@
     [mathquest.common :refer :all]
     [clojure.set :as cs]))
 
-#_(defn- ^long helper-gcd
-    ([] 1)
-    ([^long a] a)
-    ([^long a ^long b]
-     (cond (== 0 a) b
-           (== 0 b) a
-           (some #{1} [a b]) 1
-           (> a b) (helper-gcd (- a b) b)
-           :else (helper-gcd (- b a) a))))
-
-(defn- tail-gcd
+(defn- ^long tail-gcd
   ([] 1)
-  ([ a] a)
-  ([a b]
+  ([^long a] a)
+  ([^long a ^long b]
    (loop [n (long a) m (long b)]
      (cond (== n 0) m
            (== m 0) n
@@ -24,9 +14,9 @@
            (> n m) (recur (- n m) m)
            :else (recur n (- m n))))))
 
-(defn prime?
+(defn ^boolean prime?
   "Naive trial division prime checking."
-  [ n]
+  [^long n]
   (cond (< n 2) false
         (== n 2) true
         (even? n) false
@@ -39,53 +29,40 @@
 
 (defn !
   "Returns the n factorial"
-  [ n]
+  [^long n]
   (reduce *' (range 1 (inc n))))
 
 (defn fact-mod
   "Returns the n factorial mod m"
-  [n m]
+  [^long n ^long m]
   (reduce #(rem (*' % %2) m) (range 1 (inc n))))
 
 (defn expt
   "Returns a^m"
-  [a m]
+  [^long a ^long m]
   (cond (== m 0) 1
         (== m 1) a
         :else (let [res (expt a (quot m 2))]
                 (*' res res (if (even? m) 1 a)))))
 
-(defn mod-expt
+(defn ^long mod-expt
   "Returns modular exponent of a^m mod n."
-  [a m n]
+  [^long a ^long m ^long n]
   (cond (== m 0) 1
         (== m 1) (rem a n)
         :else (let [res (mod-expt a (quot m 2) n)]
                 (rem (*' res res (if (even? m) 1 a)) n))))
 
-(defn gcd
+(defn ^long gcd
   "Returns the greatest common divisors of one or more integers."
   [ & xs]
   (if (empty? xs)
     (tail-gcd)
     (reduce tail-gcd xs)))
 
-(defn- helper-lcm
-  ([] 1)
-  ([a] (long a))
-  ([a b]
-   (let [g (gcd a b)]
-     (* (quot a g) (quot b g) g))))
-
-(defn lcm
-  [ & xs]
-  (if (empty? xs)
-    (helper-lcm)
-    (reduce helper-lcm xs)))
-
-(defn divisors
+(defn ^longs divisors
   "Returns all the divisors of n"
-  [n]
+  [^long n]
   (cond
     (== 1 n) [1]
     (even? n)
@@ -113,7 +90,7 @@
   "Returns the prime factors of n, map version"
   [n]
   (let [lim (-> n sqrt long inc)]
-    (loop [i (int 2) res {} cur (long n)]
+    (loop [i (int 2) res {} cur n]
       (cond (or (> i lim) (> i cur))
             (if (prime? cur) (merge res {cur 1}) res)
             (== 0 (rem cur i))
@@ -129,17 +106,87 @@
               (recur (+ i 1) res cur))
             :else (recur (+ i 1) res cur)))))
 
-(defn- helper-lcm-1
+(defn- helper-lcm
   ([] 1)
   ([a] a)
   ([a b]
    (let [divs-a (prime-factors a)
          divs-b (prime-factors b)]
      (->> (merge-with max divs-a divs-b)
-          (reduce #(* % (apply * (repeat (key %2) (val %2)))))))))
+          (reduce #(*' % (expt (key %2) (val %2))) 1)))))
 
-(defn ^long lcm-1
+(defn ^long lcm
+  "Returns the least common multiple of one integer or more."
   [& xs]
   (if (empty? xs)
-    (helper-lcm-1)
-    (reduce helper-lcm-1 xs)))
+    (helper-lcm)
+    (reduce helper-lcm xs)))
+
+(defn ^longs sieve
+  "Returns positive primes not greater than lim"
+  [^long lim]
+  (let [llim (-> lim sqrt long inc)
+        refs (boolean-array (inc lim) true)]
+    (loop [i (int 3) res (transient [2])]
+      (cond (>= i lim)
+            (persistent! res)
+            (<= i llim)
+            (if (aget refs i)
+              (do (loop [j (int (* i i))]
+                    (when (<= j lim)
+                      (aset refs j false)
+                      (recur (+ j i i))))
+                  (recur (+ i 2) (conj! res i)))
+              (recur (+ i 2) res))
+            :else
+            (if (aget refs i)
+              (recur (+ i 2) (conj! res i))
+              (recur (+ i 2) res))))))
+
+(defn ^long sum-sieve
+  "Returns the sum of positive primes not greater than lim"
+  [^long lim]
+  (let [llim (-> lim sqrt int inc)
+        refs (boolean-array (inc lim) true)]
+    (loop [i (int 3) res (int 2)]
+      (cond (>= i lim)
+            res
+            (<= i llim)
+            (if (aget refs i)
+              (do (loop [j (int (* i i))]
+                    (when (<= j lim)
+                      (aset refs j false)
+                      (recur (+ j i i))))
+                  (recur (+ i 2) (+ res 2)))
+              (recur (+ i 2) res))
+            :else
+            (if (aget refs i)
+              (recur (+ i 2) (+ res i))
+              (recur (+ i 2) res))))))
+
+;; useless stuffs but probably important to keep
+
+(comment
+  ;; We have a faster lcm for large integers
+  (defn- helper-lcm-x
+    ([] 1)
+    ([a] (long a))
+    ([a b]
+     (let [g (gcd a b)]
+       (* (quot a g) (quot b g) g))))
+
+  (defn lcm-x
+    [& xs]
+    (if (empty? xs)
+      (helper-lcm-x)
+      (reduce helper-lcm-x xs)))
+
+  (defn- ^long helper-gcd
+    ([] 1)
+    ([^long a] a)
+    ([^long a ^long b]
+     (cond (== 0 a) b
+           (== 0 b) a
+           (some #{1} [a b]) 1
+           (> a b) (helper-gcd (- a b) b)
+           :else (helper-gcd (- b a) a)))))
