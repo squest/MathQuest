@@ -36,7 +36,7 @@
 
   (time
     (testing "lcm"
-      (log/info "\nTesting LCM with various arities")
+      (log/info "Testing LCM with various arities")
       )))
 
 
