@@ -157,7 +157,7 @@
                     (when (<= j lim)
                       (aset refs j false)
                       (recur (+ j i i))))
-                  (recur (+ i 2) (+ res 2)))
+                  (recur (+ i 2) (+ res i)))
               (recur (+ i 2) res))
             :else
             (if (aget refs i)
