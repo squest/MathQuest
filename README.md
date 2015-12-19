@@ -3,6 +3,11 @@
 Collection of functions to perform (hopefully) fast mathematical tasks for Clojure.  
 Why reinventing the wheel? Some people are just love to waste their time on weekend clojuring.  
 
+## Status
+
+![alt tag](https://circleci.com/gh/squest/MathQuest.svg?style=shield&circle-token=:circle-token)
+[![Circle CI](https://circleci.com/gh/squest/MathQuest/tree/master.svg?style=svg)](https://circleci.com/gh/squest/MathQuest/tree/master)  
+
 ## Roadmap
 
 1. Discrete mathematics (lcm, gcd, primes, totient, modular arithmetics, etc).  
