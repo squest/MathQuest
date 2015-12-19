@@ -201,6 +201,9 @@
       (is (= false (coprime? 11 13 17 19 (* 2 11))))
       (is (= [] (filterv (partial coprime? 2) (range 4 20 2))))
       (is (= (filterv #(pos? (rem % 3)) (range 2 20))
-             (filterv (partial coprime? 3) (range 2 20)))))))
+             (filterv (partial coprime? 3) (range 2 20))))
+      (let [a (rand-int 1000)]
+        (is (= (filterv #(== 1 (gcd a %)) (range 1 a))
+               (coprimes a)))))))
 
 

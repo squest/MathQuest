@@ -181,6 +181,11 @@
               (recur (+ i 2) (+ res i))
               (recur (+ i 2) res))))))
 
+(defn ^longs coprimes
+  "Returns all positive numbers that are less than n and coprime to n."
+  [^long n]
+  (filterv (partial coprime? n) (range 1 n)))
+
 ;; useless stuffs but probably important to keep
 
 (comment
