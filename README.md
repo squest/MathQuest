@@ -1,6 +1,7 @@
 # MathQuest
 
-A Clojure library designed to ... well, that part is up to you.
+Collection of functions to perform (hopefully) fast mathematical tasks for Clojure.  
+Why reinventing the wheel? Some people are just love to waste their time on weekend clojuring.  
 
 ## Roadmap
 
