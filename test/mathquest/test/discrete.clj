@@ -109,7 +109,7 @@
       (is (= (repeat 2 true) (map prime? [2147483647 67280421310721])))
       ;; fast enough to check 2000000 even numbers
       ;; Should be done in less than 500ms
-      (let [timeout 500 maxi 4000000]
+      (let [timeout 300 maxi 4000000]
         (is (= true
                (let [job (->> (range 4 maxi 2)
                               (every? #(false? (prime? %)))
