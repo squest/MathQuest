@@ -7,7 +7,7 @@
   (println "Testing common functions")
   (time
     (testing "gcd"
-      (println "GCD with single and multiple args")
+      (println "Testing GCD with single and multiple args")
       (is (= 1 (gcd)))
       (let [a (rand-int 1000)]
         (is (= a (gcd a)))
@@ -23,7 +23,7 @@
 
   (time
     (testing "divisors"
-      (println "Divisors")
+      (println "Testing Divisors")
       (is (= [1 2] (divisors 2)))
       (is (= [1 3] (divisors 3)))
       (is (= clojure.lang.ArraySeq
