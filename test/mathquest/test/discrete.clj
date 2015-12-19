@@ -1,13 +1,15 @@
 (ns mathquest.test.discrete
   (:require
     [clojure.test :refer :all]
-    [mathquest.discrete :refer :all]))
+    [mathquest.common :refer :all]
+    [mathquest.discrete :refer :all]
+    [taoensso.timbre :as log]))
 
 (deftest common-test
   (println "Testing common functions")
   (time
     (testing "gcd"
-      (println "GCD with single and multiple args")
+      (log/info "GCD with single and multiple args")
       (is (= 1 (gcd)))
       (let [a (rand-int 1000)]
         (is (= a (gcd a)))
@@ -23,13 +25,17 @@
 
   (time
     (testing "divisors"
-      (println "Divisors")
+      (log/info "Divisors")
       (is (= [1 2] (divisors 2)))
       (is (= [1 3] (divisors 3)))
       (is (= clojure.lang.ArraySeq
              (type (divisors 100))))
       (is (= [1 2 3 6] (divisors 6)))
       (is (= [1 2 4] (divisors 4)))
-      (is (= true (every? integer? (divisors 34353452342)))))))
+      (is (= true (every? integer? (divisors 34353452342))))))
+
+  (time
+    (testing "lcm"
+      (log/info "\nTesting LCM with various arities"))))
 
 
