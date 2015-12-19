@@ -31,9 +31,9 @@
     (even? n)
     (let [lim (-> n sqrt inc int)]
       (loop [i (int 2) res (transient [1 n])]
-        (if (> i lim)
+        (if (>= i lim)
           (-> res persistent! sort)
-          (if (== (sqrt i) n)
+          (if (== (sqr i) n)
             (-> (conj! res i) persistent! sort)
             (let [r (rem n i)]
               (if (== 0 r)
@@ -42,9 +42,9 @@
     (odd? n)
     (let [lim (-> n sqrt inc int)]
       (loop [i (int 3) res (transient [1 n])]
-        (if (> i lim)
-          (-> res persistent! sort)
-          (if (== (sqrt i) n)
+        (if (>= i lim)
+          (-> res persistent! sort vec)
+          (if (== (sqr i) n)
             (-> (conj! res i) persistent! sort)
             (let [r (rem n i)]
               (if (== 0 r)
