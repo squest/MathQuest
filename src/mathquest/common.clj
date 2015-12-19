@@ -33,7 +33,7 @@
       (loop [i (int 2) res (transient [1 n])]
         (if (>= i lim)
           (-> res persistent! sort)
-          (if (== (sqr i) n)
+          (if (== (square i) n)
             (-> (conj! res i) persistent! sort)
             (let [r (rem n i)]
               (if (== 0 r)
@@ -44,7 +44,7 @@
       (loop [i (int 3) res (transient [1 n])]
         (if (>= i lim)
           (-> res persistent! sort vec)
-          (if (== (sqr i) n)
+          (if (== (square i) n)
             (-> (conj! res i) persistent! sort)
             (let [r (rem n i)]
               (if (== 0 r)
