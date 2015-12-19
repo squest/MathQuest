@@ -109,7 +109,7 @@
       (is (= (repeat 2 true) (map prime? [2147483647 67280421310721])))
       ;; fast enough to check 2000000 even numbers
       ;; Should be done in less than 500ms
-      (let [timeout 500 maxi 4000000]
+      (let [timeout 250 maxi 4000000]
         (is (= true
                (let [job (->> (range 4 maxi 2)
                               (every? #(false? (prime? %)))
@@ -176,11 +176,13 @@
                    (map i-raws)))))))
   (time
     (testing "Modular exponential function"
-      (let [i-raws (repeatedly 100 #(rand-int 1000))
-            j-raws (->> (repeatedly #(rand-int 1000))
+      (let [i-raws (repeatedly 100 #(rand-int 100))
+            j-raws (->> (repeatedly #(rand-int 100))
                         (filter pos?)
                         (take 100))
-            m (rand-int 10)]
+            m (loop []
+                (let [res (rand-int 5)]
+                  (if (some #{res} [0 1]) (recur) res)))]
         (is (= (repeat 100 true)
                (-> #(== (rem (expt % m) %2)
                         (mod-expt % m %2))
@@ -189,5 +191,16 @@
                (-> #(== (rem (bigint (Math/pow % m)) %2)
                         (mod-expt % m %2))
                    (map i-raws j-raws))))))))
+
+(deftest coprimality-tests
+  (log/info "Testing coprimality functions and Euler's totient")
+  (time
+    (testing "Coprimality"
+      (is (= true (all-coprime? 2 3 5 7 11 13 17 19)))
+      (is (= true (coprime? 2 3 5 7 11 13 17 19)))
+      (is (= false (coprime? 11 13 17 19 (* 2 11))))
+      (is (= [] (filterv (partial coprime? 2) (range 4 20 2))))
+      (is (= (filterv #(pos? (rem % 3)) (range 2 20))
+             (filterv (partial coprime? 3) (range 2 20)))))))
 
 

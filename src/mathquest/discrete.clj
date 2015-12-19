@@ -53,12 +53,29 @@
         :else (let [res (mod-expt a (quot m 2) n)]
                 (rem (*' res res (if (even? m) 1 a)) n))))
 
-(defn ^long gcd
+(defn gcd
   "Returns the greatest common divisors of one or more integers."
-  [ & xs]
+  [& xs]
   (if (empty? xs)
     (tail-gcd)
     (reduce tail-gcd xs)))
+
+(defn all-coprime?
+  "Returns true if all numbers are coprime"
+  [& xs]
+  (if (empty? xs) false (== 1 (apply gcd xs))))
+
+(defn coprime?
+  "Returns true if all numbers are coprime pairs to each other"
+  [& xs]
+  (if (empty? xs)
+    true
+    (let [ctr (count xs)]
+      (->> (for [i (range ctr)
+                 j (range ctr)
+                 :when (not= i j)]
+             (== 1 (gcd (nth xs i) (nth xs j))))
+           (every? true?)))))
 
 (defn ^longs divisors
   "Returns all the divisors of n"
