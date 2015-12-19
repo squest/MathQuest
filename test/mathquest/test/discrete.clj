@@ -6,7 +6,7 @@
     [taoensso.timbre :as log]))
 
 (deftest discrete-tests
-  (println "Testing common functions")
+  (log/info "Testing common functions")
   (time
     (testing "gcd"
       (log/info "GCD with single and multiple args")
