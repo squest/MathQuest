@@ -5,7 +5,7 @@
     [mathquest.discrete :refer :all]
     [taoensso.timbre :as log]))
 
-(deftest common-test
+(deftest discrete-tests
   (println "Testing common functions")
   (time
     (testing "gcd"
@@ -36,6 +36,7 @@
 
   (time
     (testing "lcm"
-      (log/info "\nTesting LCM with various arities"))))
+      (log/info "\nTesting LCM with various arities")
+      )))
 
 

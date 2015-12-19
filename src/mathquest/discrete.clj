@@ -1,22 +1,33 @@
 (ns mathquest.discrete
   (:require [mathquest.common :refer :all]))
 
-(defn- ^long helper-gcd
+#_(defn- ^long helper-gcd
+    ([] 1)
+    ([^long a] a)
+    ([^long a ^long b]
+     (cond (== 0 a) b
+           (== 0 b) a
+           (some #{1} [a b]) 1
+           (> a b) (helper-gcd (- a b) b)
+           :else (helper-gcd (- b a) a))))
+
+(defn- ^long tail-gcd
   ([] 1)
   ([^long a] a)
   ([^long a ^long b]
-   (cond (== 0 a) b
-         (== 0 b) a
-         (some #{1} [a b]) 1
-         (> a b) (helper-gcd (- a b) b)
-         :else (helper-gcd (- b a) a))))
+   (loop [n (long a) m (long b)]
+     (cond (== n 0) m
+           (== m 0) n
+           (some #{1} [n m]) 1
+           (> n m) (recur (- n m) m)
+           :else (recur n (- m n))))))
 
 (defn gcd
   "Returns the greatest common divisors of one or more integers."
   [^longs & xs]
   (if (empty? xs)
     (helper-gcd)
-    (reduce helper-gcd xs)))
+    (reduce tail-gcd xs)))
 
 (defn- helper-lcm
   ([] 1)
