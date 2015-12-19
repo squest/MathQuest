@@ -1,5 +1,7 @@
 (ns mathquest.discrete
-  (:require [mathquest.common :refer :all]))
+  (:require
+    [mathquest.common :refer :all]
+    [clojure.set :as cs]))
 
 #_(defn- ^long helper-gcd
     ([] 1)
@@ -11,10 +13,10 @@
            (> a b) (helper-gcd (- a b) b)
            :else (helper-gcd (- b a) a))))
 
-(defn- ^long tail-gcd
+(defn- tail-gcd
   ([] 1)
-  ([^long a] a)
-  ([^long a ^long b]
+  ([ a] a)
+  ([a b]
    (loop [n (long a) m (long b)]
      (cond (== n 0) m
            (== m 0) n
@@ -22,9 +24,48 @@
            (> n m) (recur (- n m) m)
            :else (recur n (- m n))))))
 
+(defn prime?
+  "Naive trial division prime checking."
+  [ n]
+  (cond (< n 2) false
+        (== n 2) true
+        (even? n) false
+        :else (let [lim (-> n sqrt int inc)]
+                (loop [i (int 3)]
+                  (cond
+                    (> i lim) true
+                    (== 0 (rem n i)) false
+                    :else (recur (+ i 2)))))))
+
+(defn !
+  "Returns the n factorial"
+  [ n]
+  (reduce *' (range 1 (inc n))))
+
+(defn fact-mod
+  "Returns the n factorial mod m"
+  [n m]
+  (reduce #(rem (*' % %2) m) (range 1 (inc n))))
+
+(defn expt
+  "Returns a^m"
+  [a m]
+  (cond (== m 0) 1
+        (== m 1) a
+        :else (let [res (expt a (quot m 2))]
+                (*' res res (if (even? m) 1 a)))))
+
+(defn mod-expt
+  "Returns modular exponent of a^m mod n."
+  [a m n]
+  (cond (== m 0) 1
+        (== m 1) (rem a n)
+        :else (let [res (mod-expt a (quot m 2) n)]
+                (rem (*' res res (if (even? m) 1 a)) n))))
+
 (defn gcd
   "Returns the greatest common divisors of one or more integers."
-  [^longs & xs]
+  [ & xs]
   (if (empty? xs)
     (tail-gcd)
     (reduce tail-gcd xs)))
@@ -37,14 +78,14 @@
      (* (quot a g) (quot b g) g))))
 
 (defn lcm
-  [^longs & xs]
+  [ & xs]
   (if (empty? xs)
     (helper-lcm)
     (reduce helper-lcm xs)))
 
-(defn ^longs divisors
+(defn divisors
   "Returns all the divisors of n"
-  [^long n]
+  [n]
   (cond
     (== 1 n) [1]
     (even? n)
@@ -67,3 +108,38 @@
             (if (== 0 r)
               (recur (+ 2 i) (conj! (conj! res i) (quot n i)))
               (recur (+ 2 i) res))))))))
+
+(defn prime-factors
+  "Returns the prime factors of n, map version"
+  [n]
+  (let [lim (-> n sqrt long inc)]
+    (loop [i (int 2) res {} cur (long n)]
+      (cond (or (> i lim) (> i cur))
+            (if (prime? cur) (merge res {cur 1}) res)
+            (== 0 (rem cur i))
+            (if (prime? i)
+              (let [kom (iterate #(quot % i) cur)
+                    tmp (->> kom
+                             (drop-while #(== 0 (rem % i)))
+                             first)
+                    ctr (->> kom
+                             (take-while #(== 0 (rem % i)))
+                             count)]
+                (recur (+ i 1) (merge res {i ctr}) tmp))
+              (recur (+ i 1) res cur))
+            :else (recur (+ i 1) res cur)))))
+
+(defn- helper-lcm-1
+  ([] 1)
+  ([a] a)
+  ([a b]
+   (let [divs-a (prime-factors a)
+         divs-b (prime-factors b)]
+     (->> (merge-with max divs-a divs-b)
+          (reduce #(* % (apply * (repeat (key %2) (val %2)))))))))
+
+(defn ^long lcm-1
+  [& xs]
+  (if (empty? xs)
+    (helper-lcm-1)
+    (reduce helper-lcm-1 xs)))

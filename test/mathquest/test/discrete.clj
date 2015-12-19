@@ -9,11 +9,7 @@
   (println "Testing common functions")
   (time
     (testing "gcd"
-<<<<<<< HEAD:test/mathquest/test/common.clj
-      (println "Testing GCD with single and multiple args")
-=======
       (log/info "GCD with single and multiple args")
->>>>>>> master:test/mathquest/test/discrete.clj
       (is (= 1 (gcd)))
       (let [a (rand-int 1000)]
         (is (= a (gcd a)))
@@ -29,11 +25,7 @@
 
   (time
     (testing "divisors"
-<<<<<<< HEAD:test/mathquest/test/common.clj
-      (println "Testing Divisors")
-=======
       (log/info "Divisors")
->>>>>>> master:test/mathquest/test/discrete.clj
       (is (= [1 2] (divisors 2)))
       (is (= [1 3] (divisors 3)))
       (is (= clojure.lang.ArraySeq
@@ -45,6 +37,22 @@
   (time
     (testing "lcm"
       (log/info "Testing LCM with various arities")
-      )))
+      (is (= 1 (lcm)))
+      (let [res (repeatedly 10 #(rand-int 1000))]
+        (is (= res (map lcm res)))
+        (is (= res (map lcm res res)))
+        (is (= res (map lcm res res res)))
+        (is (= (repeat 10 java.lang.Long)
+               (map type (map lcm res res res res res)))))
+      (let [tmp (filter prime? (range 10 30))]
+        (is (= (apply * tmp) (apply lcm tmp)))
+        (let [tmp2 (shuffle tmp) f #(take % tmp2)]
+          (is (= (apply * (f 2)) (apply lcm (f 2))))
+          (is (= (apply * (f 3)) (apply lcm (f 3))))
+          (is (= (apply * (f 4)) (apply lcm (f 4))))
+          (is (= (apply * (f 5))
+                 (apply lcm (take 10 (cycle (f 5))))))
+          (is (= (apply * (f 5))
+                 (apply lcm (take 20 (cycle (f 5)))))))))))
 
 
