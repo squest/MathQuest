@@ -1,7 +1,7 @@
-(ns mathquest.test.common
+(ns mathquest.test.discrete
   (:require
     [clojure.test :refer :all]
-    [mathquest.common :refer :all]))
+    [mathquest.discrete :refer :all]))
 
 (deftest common-test
   (println "Testing common functions")

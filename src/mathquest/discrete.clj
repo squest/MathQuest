@@ -1,4 +1,4 @@
-(ns mathquest.common)
+(ns mathquest.discrete)
 
 (defn ^long square [^long x] (* x x))
 
