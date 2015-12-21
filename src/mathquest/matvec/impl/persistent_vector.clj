@@ -15,7 +15,57 @@
     (mapv f this))
 
   (emap [this f]
-    (->> (mapv f r) (for [r this]) vec)))
+    (->> (for [r this] (mapv f r)) vec))
+
+  (esum [this]
+    (if (vector? (first this))
+      (reduce + (map #(reduce + %) this))
+      (reduce + this)))
+
+  (col-count [this]
+    (count (first this)))
+
+  (row-count [this]
+    (count this))
+
+  (m-update [this path f]
+    (update-in this path f))
+
+  (get-in-m [this path]
+    (get-in this path))
+
+  (creduce [this f]
+    (reduce f (columns this)))
+
+  (creduce [this f val]
+    (reduce f val (columns this)))
+
+  (rreduce [this f]
+    (reduce f this))
+
+  (rreduce [this f val]
+    (reduce f val this))
+
+  (cereduce [this f]
+    (reduce f (map #(reduce f %) (columns this))))
+
+  (cereduce [this f val]
+    (reduce f val (map #(reduce f %) (columns this))))
+
+  (rereduce [this f]
+    (reduce f (map #(reduce f %) this)))
+
+  (rereduce [this f val]
+    (reduce f val (map #(reduce f %) this)))
+
+  (col [this i]
+    (mapv #(% i) this))
+
+  (row [this i]
+    (this i))
+
+  (columns [this]
+    (mapv #(col this %) (range (count (first this))))))
 
 (extend-type clojure.lang.PersistentVector
 
