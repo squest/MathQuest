@@ -14,4 +14,5 @@
   [[org.clojure/clojure "1.7.0"]
    [net.mikera/core.matrix "0.47.0"]
    [net.mikera/vectorz-clj "0.38.0"]
-   [com.taoensso/timbre "4.1.4"]])
+   [com.taoensso/timbre "4.1.4"]
+   [uncomplicate/neanderthal "0.4.0"]])
